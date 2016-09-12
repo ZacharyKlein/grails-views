@@ -1,0 +1,81 @@
+buildscript {
+    ext {
+        grailsVersion = project.grailsVersion
+    }
+    repositories {
+        mavenLocal()
+        maven { url "https://repo.grails.org/grails/core" }
+    }
+    dependencies {
+        classpath "org.grails:grails-gradle-plugin:$grailsVersion"
+    }
+}
+
+
+group "org.grails.plugins"
+
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: "org.grails.grails-plugin"
+apply plugin: "org.grails.grails-gsp"
+apply plugin: "org.grails.grails-plugin-publish"
+apply plugin: 'optional-base'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+
+grailsPublish {
+    userOrg = 'grails'
+    githubSlug = 'grails/grails-views'
+    license {
+        name = 'Apache-2.0'
+    }
+    title = "JSON Views Plugin"
+    desc = "Adds support for defining views in JSON"
+    developers = [graemerocher:"Graeme Rocher"]
+}
+
+bintray {
+    pkg {
+        desc = "Grails Views"
+        name = 'grails-views'
+    }
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.grails:grails-bom:$grailsVersion"
+    }
+    applyMavenExclusions false
+}
+
+dependencies {
+    provided 'org.springframework.boot:spring-boot-starter-logging'
+    provided "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-autoconfigure"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
+    provided "org.grails:grails-web-boot"
+    provided "org.grails:grails-dependencies"
+    provided 'javax.servlet:javax.servlet-api:3.1.0'
+
+    compile project(":views-core")
+
+    testCompile "org.grails:grails-plugin-testing"
+
+    testRuntime "org.javassist:javassist:3.18.1-GA"
+
+    console "org.grails:grails-console"
+}
+
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
+
+
+jar {
+  exclude "*.gson"
+}
